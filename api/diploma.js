@@ -4,8 +4,6 @@ export default async function handler(req, res) {
     if (!roll) {
         return res.status(400).json({ success: false, message: "Roll number is required!" });
     }
-
-    // টেস্ট করার জন্য ডামি ডেটা (পরে এখানে PDF Parsed Data / Database যুক্ত হবে)
     const mockDatabase = {
         "571779": {
             roll: "571779",
