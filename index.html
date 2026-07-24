@@ -22,27 +22,27 @@
         border-radius: 20px; 
         box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
         text-align: center; 
-        animation: fadeIn 0.5s ease; 
     }
-    @keyframes fadeIn { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
 
-    /* লোগো বৃত্তের একদম মাঝে */
+    /* লোগো 100% মাঝে করার ট্রিক */
     .logo-container { 
-        display: flex; 
-        justify-content: center; 
-        margin-bottom: 15px;
-    }
-    .logo-container img { 
-        width: 100px; 
-        height: 100px; 
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 15px auto; /* auto দিলে মাঝে আসবে */
         border-radius: 50%; 
         border: 4px solid #667eea; 
-        object-fit: cover; /* ছবি ক্রপ হয়ে বৃত্তের মাঝে ফিট হবে */
+        overflow: hidden; /* বাইরের অংশ কেটে দিবে */
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .logo-container img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; /* ভিতরের অংশ ফিট হবে */
+        transform: scale(1.15); /* একটু জুম করে দিলে ফাঁকা কম লাগবে */
     }
 
     h1 { font-size: 24px; color: #333; margin-bottom: 5px; }
-    h3 { font-size: 14px; color: #667eea; margin-bottom: 25px; font-weight: 600; letter-spacing: 1px; }
+    h3 { font-size: 14px; color: #667eea; margin-bottom: 25px; font-weight: 600; }
     .input-group { margin-bottom: 18px; text-align: left; }
     .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 14px; }
     .input-group input, .input-group select { 
@@ -51,12 +51,10 @@
         border: 2px solid #e0e0e0; 
         border-radius: 10px; 
         font-size: 15px; 
-        transition: 0.3s; 
     }
     .input-group input:focus, .input-group select:focus { 
         border-color: #667eea; 
         outline: none; 
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); 
     }
     .btn { 
         width: 100%; 
@@ -68,13 +66,10 @@
         font-size: 16px; 
         font-weight: bold; 
         cursor: pointer; 
-        transition: transform 0.2s, box-shadow 0.2s; 
     }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
     .developer-name { margin-top: 20px; color: #777; font-size: 13px; }
     .facebook-link { margin-top: 10px; }
     .facebook-link a { color: #667eea; text-decoration: none; font-weight: 600; }
-    .facebook-link a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
