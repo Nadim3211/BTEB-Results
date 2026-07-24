@@ -1,73 +1,37 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <title>BTEB Result Checker</title>
+    <title>BTEB Result</title>
     <style>
-        body { font-family: 'Arial'; background: #f0f2f5; padding: 20px; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        input, button { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; }
-        button { background: #007bff; color: white; border: none; cursor: pointer; }
-        .card { background: #fff; border-radius: 8px; padding: 15px; margin-top: 15px; box-shadow: 0 1px 5px rgba(0,0,0,0.05); }
-        .semester { border-left: 4px solid #28a745; }
-        .cgpa { font-size: 28px; color: #007bff; font-weight: bold; }
-        .gpa { font-size: 28px; color: #28a745; font-weight: bold; }
-        .passed { color: #28a745; float: right; }
+        body{text-align:center; padding:50px; font-family:Arial}
+        input,button{padding:10px; margin:5px; width:200px}
+        button{background:blue; color:white; border:none; cursor:pointer}
+        #result{margin-top:20px; font-size:20px}
     </style>
 </head>
 <body>
-<div class="container">
     <h2>BTEB Result Checker</h2>
-    <form id="resultForm">
-        <input name="exam" placeholder="Exam: DIPLOMA" required>
-        <input name="year" placeholder="Year: 2023" required>
-        <input name="sem" placeholder="Semester: 8" required>
-        <input name="roll" placeholder="Roll" required>
-        <input name="reg" placeholder="Reg" required>
-        <button type="submit">Result দেখো</button>
-    </form>
+    <input id="roll" placeholder="Roll লিখো"><br>
+    <input id="reg" placeholder="Reg লিখো"><br>
+    <button onclick="getResult()">Result দেখো</button>
     <div id="result"></div>
-</div>
 
 <script>
-document.getElementById('resultForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = new FormData(e.target);
-    const params = new URLSearchParams(form).toString();
-    document.getElementById('result').innerHTML = "Loading...";
+async function getResult(){
+    const roll = document.getElementById('roll').value;
+    const reg = document.getElementById('reg').value;
+    document.getElementById('result').innerText = "খোঁজা হচ্ছে...";
     
-    const res = await fetch(`/api/diploma?${params}`);
+    const res = await fetch(`/api/result?roll=${roll}&reg=${reg}`);
     const data = await res.json();
     
-    if(data.success){
-        let html = `
-        <div class="card">
-            <h3># ${data.data.roll}</h3>
-            <p>Diploma in Engineering | Regulation 2016</p>
-        </div>`;
-        
-        data.data.results.forEach(sem => {
-            html += `
-            <div class="card semester">
-                <h4>${sem.semester} Semester <span class="passed">✓ Passed</span></h4>
-                <p>${sem.date}</p>
-                <div style="display:flex; gap:10px;">
-                    <div style="flex:1; background:#e7f3ff; padding:10px; border-radius:5px;">
-                        <small>CGPA</small>
-                        <div class="cgpa">${sem.cgpa}</div>
-                    </div>
-                    <div style="flex:1; background:#e7ffe9; padding:10px; border-radius:5px;">
-                        <small>GPA</small>
-                        <div class="gpa">${sem.gpa}</div>
-                    </div>
-                </div>
-            </div>`;
-        });
-        document.getElementById('result').innerHTML = html;
+    if(data.gpa){
+        document.getElementById('result').innerHTML = 
+        `Roll: ${roll} <br> GPA: <b>${data.gpa}</b> <br> CGPA: <b>${data.cgpa}</b>`;
     } else {
-        document.getElementById('result').innerHTML = "<p style='color:red'>Result পাওয়া যায়নি</p>";
+        document.getElementById('result').innerText = "Result পাওয়া যায়নি";
     }
-});
+}
 </script>
 </body>
 </html>
