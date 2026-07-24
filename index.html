@@ -7,7 +7,7 @@
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
     body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-    .container { width: 100%; max-width: 420px; background: #fff; padding: 35px 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; }
+    .container { width: 100%; max-width: 450px; background: #fff; padding: 35px 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; }
     .logo-container { margin-bottom: 20px; }
     .logo-container img { width: 110px; height: auto; display: block; margin: 0 auto; }
     h1 { font-size: 24px; color: #333; margin-bottom: 5px; font-weight: 800; }
@@ -16,13 +16,19 @@
     .input-group label { display: block; margin-bottom: 8px; font-weight: 700; color: #555; font-size: 14px; }
     .input-group input, .input-group select { width: 100%; padding: 14px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; background: #f8f9fa; }
     .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .developer-name { margin-top: 20px; color: #777; font-size: 13px; }
     .facebook-link { margin-top: 10px; }
     .facebook-link a { color: #667eea; text-decoration: none; font-weight: 700; }
-    #resultBox { margin-top: 20px; text-align: left; display: none; }
-    .loading { color: #667eea; font-weight: 700; }
-    .error { color: red; font-weight: 700; }
+
+    /* Result iFrame */
+    #resultFrame { 
+        width: 100%; 
+        height: 500px; 
+        border: 2px solid #667eea; 
+        border-radius: 10px; 
+        margin-top: 20px; 
+        display: none; 
+    }
 </style>
 </head>
 <body>
@@ -47,10 +53,10 @@
             <label for="rollNumber">Enter Your Roll Number</label>
             <input type="text" id="rollNumber" name="rollNumber" placeholder="571779" required>
         </div>
-        <button type="submit" class="btn" id="submitBtn">Check Result</button>
+        <button type="submit" class="btn">Check Result</button>
     </form>
 
-    <div id="resultBox"></div>
+    <iframe id="resultFrame"></iframe>
 
     <div class="developer-name">
         <p>Developed by Atikur Rahman Nadim</p>
@@ -61,38 +67,18 @@
 </div>
 
 <script>
-document.getElementById('resultForm').addEventListener('submit', async function(e){
+document.getElementById('resultForm').addEventListener('submit', function(e){
     e.preventDefault();
     
-    const btn = document.getElementById('submitBtn');
-    const resultBox = document.getElementById('resultBox');
     const regulation = document.getElementById('regulation').value;
     const roll = document.getElementById('rollNumber').value;
+    const frame = document.getElementById('resultFrame');
     
-    btn.disabled = true;
-    btn.innerText = "Checking...";
-    resultBox.style.display = 'block';
-    resultBox.innerHTML = '<p class="loading">Result খোঁজা হচ্ছে...</p>';
+    // btebresultszone এর লিংক সরাসরি iframe এ লোড
+    const url = `https://btebresultszone.com/results?regulation=${regulation}&roll=${roll}`;
     
-    try {
-        // btebresultszone এর API URL - এটা ওরা form এ use করে
-        const url = `https://btebresultszone.com/results?regulation=${regulation}&roll=${roll}`;
-        
-        // Proxy use করতে হবে CORS এর জন্য
-        const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-        
-        const response = await fetch(proxyUrl);
-        const data = await response.text();
-        
-        // ওদের পেজ থেকে রেজাল্ট টেবিলটা বের করে দেখাবো
-        resultBox.innerHTML = data;
-        
-    } catch (error) {
-        resultBox.innerHTML = '<p class="error">রেজাল্ট পাওয়া যায়নি। Roll বা Regulation চেক করুন।</p>';
-    }
-    
-    btn.disabled = false;
-    btn.innerText = "Check Result";
+    frame.src = url;
+    frame.style.display = 'block';
 });
 </script>
 
