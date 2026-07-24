@@ -1,2 +1,31 @@
-const res = await fetch(`/api/diploma?exam=${exam}&year=${year}&sem=${sem}&roll=${roll}&reg=${reg}`);
-const result = await res.json();
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BTEB Result</title>
+</head>
+<body>
+    <h2>BTEB Result Checker</h2>
+    <form id="resultForm">
+        <input name="exam" placeholder="Exam Code" required>
+        <input name="year" placeholder="Year" required>
+        <input name="sem" placeholder="Semester" required>
+        <input name="roll" placeholder="Roll" required>
+        <input name="reg" placeholder="Reg" required>
+        <button type="submit">Result দেখো</button>
+    </form>
+    <div id="result"></div>
+
+<script>
+document.getElementById('resultForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = new FormData(e.target);
+    const params = new URLSearchParams(form).toString();
+    
+    const res = await fetch(`/api/diploma?${params}`);
+    const data = await res.json();
+    
+    document.getElementById('result').innerHTML = JSON.stringify(data);
+});
+</script>
+</body>
+</html>
