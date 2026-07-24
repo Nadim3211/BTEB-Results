@@ -25,16 +25,9 @@
         animation: fadeIn 0.5s ease; 
     }
     @keyframes fadeIn { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
-   
-    .logo-container { 
-        margin-bottom: 20px;
-    }
-    .logo-container img { 
-        width: 120px; 
-        height: auto; 
-        display: block;
-        margin: 0 auto; 
-    }
+    
+    .logo-container { margin-bottom: 20px; }
+    .logo-container img { width: 120px; height: auto; display: block; margin: 0 auto; }
 
     h1 { font-size: 24px; color: #333; margin-bottom: 5px; }
     h3 { font-size: 14px; color: #667eea; margin-bottom: 25px; font-weight: 600; letter-spacing: 1px; }
@@ -70,6 +63,32 @@
     .facebook-link { margin-top: 10px; }
     .facebook-link a { color: #667eea; text-decoration: none; font-weight: 600; }
     .facebook-link a:hover { text-decoration: underline; }
+
+    /* Result Card Styling */
+    .result-card {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+        text-align: left;
+        border: 1px solid #eee;
+    }
+    .sem-box {
+        background: #fff;
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 12px;
+        border: 1px solid #e0e0e0;
+    }
+    .badge-pass {
+        background: #e6f4ea;
+        color: #137333;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        float: right;
+    }
 </style>
 </head>
 <body>
@@ -80,7 +99,7 @@
     <h1>Diploma Results Zone</h1>
     <h3>DIPLOMA IN ENGINEERING</h3>
     
-    <form method="post" action="result.php">
+    <form id="resultForm">
         <div class="input-group">
             <label for="regulation">Select Regulation</label>
             <select id="regulation" name="regulation" required>
@@ -94,15 +113,70 @@
             <label for="rollNumber">Enter Your Roll Number</label>
             <input type="text" id="rollNumber" name="rollNumber" placeholder="571779" required>
         </div>
-        <button type="submit" class="btn">Check Result</button>
+        <button type="submit" class="btn" id="submitBtn">Check Result</button>
     </form>
+
+    <div id="resultContainer"></div>
 
     <div class="developer-name">
         <p>Developed by Atikur Rahman Nadim</p>
     </div>
     <div class="facebook-link">
-        <a href="https://www.facebook.com/ansatikur">Developer's Facebook Profile</a>
+        <a href="https://www.facebook.com/ansatikur" target="_blank">Developer's Facebook Profile</a>
     </div>
 </div>
+
+<script>
+document.getElementById('resultForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const roll = document.getElementById('rollNumber').value.trim();
+    const regulation = document.getElementById('regulation').value;
+    const resultDiv = document.getElementById('resultContainer');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    submitBtn.innerText = "Searching...";
+    resultDiv.innerHTML = "";
+
+    try {
+        const response = await fetch(`/api/diploma?roll=${roll}&regulation=${regulation}`);
+        const data = await response.json();
+
+        if (data.success) {
+            let html = `
+                <div class="result-card">
+                    <h2 style="font-size: 20px; color:#333;"># ${data.roll}</h2>
+                    <p style="font-size: 13px; color:#666; margin-top:2px;">🎓 ${data.technology}</p>
+                    <p style="font-size: 12px; color:#777; margin-top:2px;">🏢 ${data.institute}</p>
+                    <hr style="margin: 15px 0; border:0; border-top:1px solid #ddd;">
+            `;
+
+            data.results.forEach(res => {
+                html += `
+                    <div class="sem-box">
+                        <span class="badge-pass">✔ ${res.status}</span>
+                        <strong style="font-size: 14px; color:#333;">🎓 ${res.semester}</strong>
+                        <p style="font-size: 11px; color:#888; margin-top:3px;">📅 ${res.publish_date}</p>
+                        
+                        <div style="margin-top:10px; background:#f0fdf4; padding:10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:12px; font-weight:bold; color:#166534;">GPA</span>
+                            <span style="font-size:20px; font-weight:bold; color:#15803d;">${res.gpa} <small style="font-size:12px;">(${res.grade})</small></span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            resultDiv.innerHTML = html;
+        } else {
+            resultDiv.innerHTML = `<p style='color:red; margin-top:15px; font-weight:600;'>${data.message}</p>`;
+        }
+    } catch (err) {
+        resultDiv.innerHTML = "<p style='color:red; margin-top:15px;'>Server error! Try again later.</p>";
+    } finally {
+        submitBtn.innerText = "Check Result";
+    }
+});
+</script>
 </body>
 </html>
