@@ -6,82 +6,34 @@
 <title>Diploma Results Zone</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
-    body { 
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-        min-height: 100vh; 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        padding: 20px; 
-    }
-    .container { 
-        width: 100%; 
-        max-width: 420px; 
-        background: #fff; 
-        padding: 30px 25px; 
-        border-radius: 20px; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-        text-align: center; 
-        animation: fadeIn 0.5s ease; 
-    }
-    @keyframes fadeIn { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
-
-    /* লোগো সরাসরি মাঝে */
-    .logo-container { 
-        margin-bottom: 20px;
-    }
-    .logo-container img { 
-        width: 120px; /* একটু বড় করে দিলাম */
-        height: auto; /* height auto রাখলে নষ্ট হবে না */
-        display: block;
-        margin: 0 auto; /* মাঝে আনার জন্য */
-    }
-
-    h1 { font-size: 24px; color: #333; margin-bottom: 5px; }
-    h3 { font-size: 14px; color: #667eea; margin-bottom: 25px; font-weight: 600; letter-spacing: 1px; }
+    body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+    .container { width: 100%; max-width: 420px; background: #fff; padding: 35px 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; }
+    .logo-container { margin-bottom: 20px; }
+    .logo-container img { width: 110px; height: auto; display: block; margin: 0 auto; }
+    h1 { font-size: 24px; color: #333; margin-bottom: 5px; font-weight: 800; }
+    h3 { font-size: 14px; color: #667eea; margin-bottom: 25px; font-weight: 700; }
     .input-group { margin-bottom: 18px; text-align: left; }
-    .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 14px; }
-    .input-group input, .input-group select { 
-        width: 100%; 
-        padding: 12px 15px; 
-        border: 2px solid #e0e0e0; 
-        border-radius: 10px; 
-        font-size: 15px; 
-        transition: 0.3s; 
-    }
-    .input-group input:focus, .input-group select:focus { 
-        border-color: #667eea; 
-        outline: none; 
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); 
-    }
-    .btn { 
-        width: 100%; 
-        padding: 14px; 
-        border: none; 
-        border-radius: 10px; 
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-        color: #fff; 
-        font-size: 16px; 
-        font-weight: bold; 
-        cursor: pointer; 
-        transition: transform 0.2s, box-shadow 0.2s; 
-    }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+    .input-group label { display: block; margin-bottom: 8px; font-weight: 700; color: #555; font-size: 14px; }
+    .input-group input, .input-group select { width: 100%; padding: 14px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; background: #f8f9fa; }
+    .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .developer-name { margin-top: 20px; color: #777; font-size: 13px; }
     .facebook-link { margin-top: 10px; }
-    .facebook-link a { color: #667eea; text-decoration: none; font-weight: 600; }
-    .facebook-link a:hover { text-decoration: underline; }
+    .facebook-link a { color: #667eea; text-decoration: none; font-weight: 700; }
+    #resultBox { margin-top: 20px; text-align: left; display: none; }
+    .loading { color: #667eea; font-weight: 700; }
+    .error { color: red; font-weight: 700; }
 </style>
 </head>
 <body>
 <div class="container">
     <div class="logo-container">
-        <img src="https://i.ibb.co/cDzwxrY/download-1.jpg" alt="BTEB Logo">
+        <img src="logo.png" alt="BTEB Logo">
     </div>
     <h1>Diploma Results Zone</h1>
     <h3>DIPLOMA IN ENGINEERING</h3>
     
-    <form method="post" action="result.php">
+    <form id="resultForm">
         <div class="input-group">
             <label for="regulation">Select Regulation</label>
             <select id="regulation" name="regulation" required>
@@ -95,8 +47,10 @@
             <label for="rollNumber">Enter Your Roll Number</label>
             <input type="text" id="rollNumber" name="rollNumber" placeholder="571779" required>
         </div>
-        <button type="submit" class="btn">Check Result</button>
+        <button type="submit" class="btn" id="submitBtn">Check Result</button>
     </form>
+
+    <div id="resultBox"></div>
 
     <div class="developer-name">
         <p>Developed by Atikur Rahman Nadim</p>
@@ -105,5 +59,42 @@
         <a href="https://www.facebook.com/ansatikur">Developer's Facebook Profile</a>
     </div>
 </div>
+
+<script>
+document.getElementById('resultForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    
+    const btn = document.getElementById('submitBtn');
+    const resultBox = document.getElementById('resultBox');
+    const regulation = document.getElementById('regulation').value;
+    const roll = document.getElementById('rollNumber').value;
+    
+    btn.disabled = true;
+    btn.innerText = "Checking...";
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = '<p class="loading">Result খোঁজা হচ্ছে...</p>';
+    
+    try {
+        // btebresultszone এর API URL - এটা ওরা form এ use করে
+        const url = `https://btebresultszone.com/results?regulation=${regulation}&roll=${roll}`;
+        
+        // Proxy use করতে হবে CORS এর জন্য
+        const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+        
+        const response = await fetch(proxyUrl);
+        const data = await response.text();
+        
+        // ওদের পেজ থেকে রেজাল্ট টেবিলটা বের করে দেখাবো
+        resultBox.innerHTML = data;
+        
+    } catch (error) {
+        resultBox.innerHTML = '<p class="error">রেজাল্ট পাওয়া যায়নি। Roll বা Regulation চেক করুন।</p>';
+    }
+    
+    btn.disabled = false;
+    btn.innerText = "Check Result";
+});
+</script>
+
 </body>
 </html>
