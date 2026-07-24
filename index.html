@@ -6,40 +6,82 @@
 <title>Diploma Results Zone</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
-    body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-    .container { width: 100%; max-width: 450px; background: #fff; padding: 35px 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; }
-    .logo-container { margin-bottom: 20px; }
-    .logo-container img { width: 110px; height: auto; display: block; margin: 0 auto; }
-    h1 { font-size: 24px; color: #333; margin-bottom: 5px; font-weight: 800; }
-    h3 { font-size: 14px; color: #667eea; margin-bottom: 25px; font-weight: 700; }
+    body { 
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+        min-height: 100vh; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        padding: 20px; 
+    }
+    .container { 
+        width: 100%; 
+        max-width: 420px; 
+        background: #fff; 
+        padding: 30px 25px; 
+        border-radius: 20px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+        text-align: center; 
+        animation: fadeIn 0.5s ease; 
+    }
+    @keyframes fadeIn { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
+
+    /* লোগো সরাসরি মাঝে */
+    .logo-container { 
+        margin-bottom: 20px;
+    }
+    .logo-container img { 
+        width: 120px; /* একটু বড় করে দিলাম */
+        height: auto; /* height auto রাখলে নষ্ট হবে না */
+        display: block;
+        margin: 0 auto; /* মাঝে আনার জন্য */
+    }
+
+    h1 { font-size: 24px; color: #333; margin-bottom: 5px; }
+    h3 { font-size: 14px; color: #667eea; margin-bottom: 25px; font-weight: 600; letter-spacing: 1px; }
     .input-group { margin-bottom: 18px; text-align: left; }
-    .input-group label { display: block; margin-bottom: 8px; font-weight: 700; color: #555; font-size: 14px; }
-    .input-group input, .input-group select { width: 100%; padding: 14px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; background: #f8f9fa; }
-    .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
+    .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 14px; }
+    .input-group input, .input-group select { 
+        width: 100%; 
+        padding: 12px 15px; 
+        border: 2px solid #e0e0e0; 
+        border-radius: 10px; 
+        font-size: 15px; 
+        transition: 0.3s; 
+    }
+    .input-group input:focus, .input-group select:focus { 
+        border-color: #667eea; 
+        outline: none; 
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); 
+    }
+    .btn { 
+        width: 100%; 
+        padding: 14px; 
+        border: none; 
+        border-radius: 10px; 
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+        color: #fff; 
+        font-size: 16px; 
+        font-weight: bold; 
+        cursor: pointer; 
+        transition: transform 0.2s, box-shadow 0.2s; 
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
     .developer-name { margin-top: 20px; color: #777; font-size: 13px; }
     .facebook-link { margin-top: 10px; }
-    .facebook-link a { color: #667eea; text-decoration: none; font-weight: 700; }
-
-    /* Result iFrame */
-    #resultFrame { 
-        width: 100%; 
-        height: 500px; 
-        border: 2px solid #667eea; 
-        border-radius: 10px; 
-        margin-top: 20px; 
-        display: none; 
-    }
+    .facebook-link a { color: #667eea; text-decoration: none; font-weight: 600; }
+    .facebook-link a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
 <div class="container">
     <div class="logo-container">
-        <img src="logo.png" alt="BTEB Logo">
+        <img src="https://i.ibb.co/cDzwxrY/download-1.jpg" alt="BTEB Logo">
     </div>
     <h1>Diploma Results Zone</h1>
     <h3>DIPLOMA IN ENGINEERING</h3>
     
-    <form id="resultForm">
+    <form method="post" action="result.php">
         <div class="input-group">
             <label for="regulation">Select Regulation</label>
             <select id="regulation" name="regulation" required>
@@ -56,8 +98,6 @@
         <button type="submit" class="btn">Check Result</button>
     </form>
 
-    <iframe id="resultFrame"></iframe>
-
     <div class="developer-name">
         <p>Developed by Atikur Rahman Nadim</p>
     </div>
@@ -65,22 +105,5 @@
         <a href="https://www.facebook.com/ansatikur">Developer's Facebook Profile</a>
     </div>
 </div>
-
-<script>
-document.getElementById('resultForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    
-    const regulation = document.getElementById('regulation').value;
-    const roll = document.getElementById('rollNumber').value;
-    const frame = document.getElementById('resultFrame');
-    
-    // btebresultszone এর লিংক সরাসরি iframe এ লোড
-    const url = `https://btebresultszone.com/results?regulation=${regulation}&roll=${roll}`;
-    
-    frame.src = url;
-    frame.style.display = 'block';
-});
-</script>
-
 </body>
 </html>
