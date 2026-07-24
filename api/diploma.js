@@ -1,0 +1,1 @@
+export default async function handler(req,res){res.setHeader('Access-Control-Allow-Origin','*');const{exam,year,sem,roll,reg}=req.query;const url=`http://www.btebresults.gov.bd/result.php?exam=${exam}&year=${year}&sem=${sem}&roll=${roll}&reg=${reg}`;const response=await fetch(url);res.json({success:true,html:await response.text()})}
