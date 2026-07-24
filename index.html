@@ -26,22 +26,15 @@
     }
     @keyframes fadeIn { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
 
-    /* বৃত্তের মাঝে লোগো */
+    /* লোগো সরাসরি মাঝে */
     .logo-container { 
-        width: 110px;
-        height: 110px;
-        margin: 0 auto 20px auto; /* মাঝে আনার জন্য */
-        border-radius: 50%; 
-        border: 4px solid #667eea; 
-        overflow: hidden; /* বাইরের অংশ কেটে দিবে */
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-        background: #fff; /* সাদা bg দিলে সুন্দর লাগবে */
+        margin-bottom: 20px;
     }
     .logo-container img { 
-        width: 100%; 
-        height: 100%; 
-        object-fit: contain; /* পুরা লোগো দেখাবে, কাটবে না */
-        transform: scale(0.95); /* একটু ছোট করে দিলাম যাতে কিনারা না কাটে */
+        width: 120px; /* একটু বড় করে দিলাম */
+        height: auto; /* height auto রাখলে নষ্ট হবে না */
+        display: block;
+        margin: 0 auto; /* মাঝে আনার জন্য */
     }
 
     h1 { font-size: 24px; color: #333; margin-bottom: 5px; }
@@ -54,10 +47,12 @@
         border: 2px solid #e0e0e0; 
         border-radius: 10px; 
         font-size: 15px; 
+        transition: 0.3s; 
     }
     .input-group input:focus, .input-group select:focus { 
         border-color: #667eea; 
         outline: none; 
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); 
     }
     .btn { 
         width: 100%; 
@@ -69,16 +64,19 @@
         font-size: 16px; 
         font-weight: bold; 
         cursor: pointer; 
+        transition: transform 0.2s, box-shadow 0.2s; 
     }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
     .developer-name { margin-top: 20px; color: #777; font-size: 13px; }
     .facebook-link { margin-top: 10px; }
     .facebook-link a { color: #667eea; text-decoration: none; font-weight: 600; }
+    .facebook-link a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
 <div class="container">
     <div class="logo-container">
-        <img src="attachment://1915338645810850" alt="BTEB Logo">
+        <img src="https://i.ibb.co/cDzwxrY/download-1.jpg" alt="BTEB Logo">
     </div>
     <h1>Diploma Results Zone</h1>
     <h3>DIPLOMA IN ENGINEERING</h3>
